@@ -69,14 +69,23 @@ async function getBooksByAuthor(author) {
 }
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-  let title = req.params.title;
+public_users.get('/title/:title',async function (req, res) {
+  try {
+    let title = req.params.title;
+    const booksByTitle = await getBookByTitle(title);
+    return res.status(200).json(booksByTitle);
+  } catch (error) {
+    return res.status(500).json({message: "Error retrieving book details from database."});
+  }
+});
+
+async function getBookByTitle(title) {
   let booksByTitle = [];
   for (key in books) {
     (books[key].title == title) && booksByTitle.push(books[key]);
   }
-  return res.send(JSON.stringify(booksByTitle, null, 4));
-});
+  return booksByTitle;
+}
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
