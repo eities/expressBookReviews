@@ -13,16 +13,13 @@ app.use("/customer", session({secret:"fingerprint_customer",resave: true, saveUn
 
 
 app.use("/customer/auth/*", function auth(req,res,next){
-    console.log("starting auth");
     if(req.session.authorization) {
         let token = req.session.authorization['accessToken'];
         jwt.verify(token, "access", (err, user) => {
             if (!err) {
                 req.user = user;
-                console.log("auth successful");
                 next();
             } else {
-                console.log("auth error");
                 return res.status(403).json({message: "User not logged in"});
             }
         })
