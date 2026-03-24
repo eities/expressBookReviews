@@ -35,10 +35,19 @@ async function getBooksFromDatabase() {
 }
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
-  let isbn = req.params.isbn;
-  return res.send(JSON.stringify(books[isbn], null, 4));
+public_users.get('/isbn/:isbn',async function (req, res) {
+  try {
+    let isbn = req.params.isbn;
+    const bookDetails = await getBookFromISBN(isbn);
+    return res.status(200).json(bookDetails);
+  } catch (error) {
+    return res.status(500).json({message: "Error retrieving book details from database."});
+  }
  });
+
+ async function getBookFromISBN(isbn) {
+  return books[isbn];
+ }
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
